@@ -8,6 +8,10 @@ data Token
   | SUB
   | MUL
   | DIV
+  | SEMICOLON
+  | COMMA
+  | OCURL
+  | CCURL
   | LPAR
   | RPAR
   | MORE

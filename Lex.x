@@ -38,6 +38,10 @@ tokens :-
 <0> "double" {\s -> TDOUBLE}
 <0> "string" {\s -> TSTRING}
 <0> "void" {\s -> TVOID}
+<0> ";" {\s -> SEMICOLON}
+<0> "," {\s -> COMMA}
+<0> "{" {\s -> OCURL}
+<0> "}" {\s -> CCURL}
 {
 
 testLex = do s <- getLine

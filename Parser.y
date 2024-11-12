@@ -27,6 +27,10 @@ import Types
   '&&' {AND}
   '||' {OR}
   '!' {NOT}
+  ';' {SEMICOLON}
+  ',' {COMMA}
+  '{' {OCURL}
+  '}' {CCURL}
   'int' {TINT}
   'double' {TDOUBLE}
   'void' {TVOID}
@@ -76,6 +80,10 @@ Tipo: 'int'                  { TInt }
 
 TCons: Num                   {CDouble $1}
      | Int                   {CInt $1}
+
+Var: Tipo Id ';'                 {$2 :#: $1}
+
+Funcao: Id '(' 
 
 {
 parseError :: [Token] -> a
