@@ -9,6 +9,5 @@ data ExprL = ExprL :&: ExprL | ExprL :|: ExprL | Not ExprL | Rel ExprR deriving 
 data Var = Id :#: Tipo deriving Show --
 data Funcao = Id :->: ([Var], Tipo) deriving Show  --
 data Programa = Prog [Funcao] [(Id, [Var], [Comando])] [Var] [Comando] deriving Show --
-data Program = Logic ExprL | Arit Expr deriving Show --
 type Bloco = [Comando]
 data Comando = If ExprL Bloco Bloco | While ExprL Bloco | Atrib Id Expr | Leitura Id | Imp Expr | Ret (Maybe Expr) | Proc Id [Expr] deriving Show

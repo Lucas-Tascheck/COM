@@ -55,7 +55,7 @@ import Types
 
 %%
 
-Program : Comando           {$1}
+Program : Declaracoes           {$1}
 
 Expr  : Expr '+' Expr       { $1 :+: $3 }
       | Expr '-' Expr       { $1 :-: $3 }
@@ -126,6 +126,15 @@ Comando: CmdSe           {$1}
 
 ListaDeCmd: ListaDeCmd Comando          {$1 ++ [$2]}
      | Comando                          {[$1]}
+
+
+Declaracao: Tipo ListaId ';' {$2 :#: $1}
+
+Declaracoes: Declaracoes Declaracao          {$1 ++ [$2]}
+     | Declaracao                            {[$1]}
+
+ListaId: ListaId ',' Id            {$1}
+     | Id                          {$1}
 
 {
 parseError :: [Token] -> a
