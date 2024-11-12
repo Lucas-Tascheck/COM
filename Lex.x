@@ -41,7 +41,6 @@ tokens :-
 <0> "," {\s -> COMMA}
 <0> "{" {\s -> OCURL}
 <0> "}" {\s -> CCURL}
-<0> @id  {\s -> ID s}   
 <0> "if" {\s -> IF}
 <0> "else" {\s -> ELSE}
 <0> "while" {\s -> WHILE}
@@ -49,6 +48,9 @@ tokens :-
 <0> "read" {\s -> LEITURA}
 <0> "print" {\s -> PRINT}
 <0> "return" {\s -> RETURN}
+
+
+<0> @id  {\s -> ID s}   
 {
 
 testLex = do s <- getLine
