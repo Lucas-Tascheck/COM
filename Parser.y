@@ -55,7 +55,8 @@ import Types
 
 %%
 
-Program : Declaracoes           {$1}
+Program : ListaDeFuncao BlocoPrincipal            {Prog [] $1 [] $2}
+     | BlocoPrincipal                             {Prog [] [] [] $1}
 
 Expr  : Expr '+' Expr       { $1 :+: $3 }
       | Expr '-' Expr       { $1 :-: $3 }
@@ -135,6 +136,16 @@ Declaracoes: Declaracoes Declaracao          {$1 ++ [$2]}
 
 ListaId: ListaId ',' Id            {$1}
      | Id                          {$1}
+
+BlocoPrincipal: '{' Declaracoes ListaDeCmd '}'         {$3}
+     | '{' ListaDeCmd '}'                              {$2}
+
+Funcao: TipoRetorno Id '(' DeclParametros ')' BlocoPrincipal          {($2, $4, $6)}
+     | TipoRetorno Id '('  ')' BlocoPrincipal                        {($2, [], $5)}
+
+ListaDeFuncao: ListaDeFuncao Funcao               {$1 ++ [$2]}
+     | Funcao                                     {[$1]}
+
 
 {
 parseError :: [Token] -> a
