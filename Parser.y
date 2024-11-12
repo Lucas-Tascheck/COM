@@ -38,6 +38,13 @@ import Types
   Num {NUM $$}
   Id {ID $$}
   Int {INT $$}
+  'if' {IF}
+  'else' {ELSE}
+  'while' {WHILE}
+  '=' {ATRIB}
+  'read' {LEITURA}
+  'print' {PRINT}
+  'return' {RETURN}
 
 %left '||'
 %left '&&'
@@ -49,8 +56,7 @@ import Types
 
 %%
 
-Program : ExprL             { Logic $1 }
-      | Expr                { Arit $1 }
+Program : DeclParametros           {$1}
 
 Expr  : Expr '+' Expr       { $1 :+: $3 }
       | Expr '-' Expr       { $1 :-: $3 }
@@ -76,14 +82,20 @@ ExprL : ExprL '||' ExprL    { $1 :|: $3 }
 Tipo: 'int'                  { TInt } 
      | 'double'              { TDouble }
      | 'string'              { TString }
+
+TipoRetorno: Tipo            {$1}
      | 'void'                { TVoid }
+
+Parametro: Tipo Id                 {$2 :#: $1}
+
+DeclParametros: DeclParametros ',' Parametro                {$1 ++ [$3]}
+     | Parametro                                            {[$1]}
 
 TCons: Num                   {CDouble $1}
      | Int                   {CInt $1}
 
-Var: Tipo Id ';'                 {$2 :#: $1}
 
-Funcao: Id '(' 
+
 
 {
 parseError :: [Token] -> a

@@ -28,5 +28,11 @@ data Token
   | TINT
   | TSTRING
   | TVOID
+  | IF
+  | ELSE
+  | WHILE
+  | ATRIB
+  | LEITURA
+  | PRINT
+  | RETURN
   deriving (Eq, Show)
-  

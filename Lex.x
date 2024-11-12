@@ -18,7 +18,6 @@ tokens :-
 <0> $white+ ;
 <0> @num {\s -> NUM (read s)}
 <0> @int {\s -> INT (read s)}
-<0> @id  {\s -> ID s}   
 <0> "+" {\s -> ADD}  
 <0> "-" {\s -> SUB}  
 <0> "*" {\s -> MUL}  
@@ -42,6 +41,14 @@ tokens :-
 <0> "," {\s -> COMMA}
 <0> "{" {\s -> OCURL}
 <0> "}" {\s -> CCURL}
+<0> @id  {\s -> ID s}   
+<0> "if" {\s -> IF}
+<0> "else" {\s -> ELSE}
+<0> "while" {\s -> WHILE}
+<0> "=" {\s -> ATRIB}
+<0> "read" {\s -> LEITURA}
+<0> "print" {\s -> PRINT}
+<0> "return" {\s -> RETURN}
 {
 
 testLex = do s <- getLine
