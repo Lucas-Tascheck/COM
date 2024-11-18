@@ -5,6 +5,7 @@ import Token
 import qualified Lex as L
 import System.IO
 import Types
+import Aux
 }
 
 %name calc
@@ -55,8 +56,7 @@ import Types
 
 %%
 
-Program : ListaDeFuncao BlocoPrincipal            {Prog [] $1 [] $2}
-     | BlocoPrincipal                             {Prog [] [] [] $1}
+Program : Declaracoes     {$1}                                
 
 Expr  : Expr '+' Expr       { $1 :+: $3 }
       | Expr '-' Expr       { $1 :-: $3 }
@@ -129,13 +129,13 @@ ListaDeCmd: ListaDeCmd Comando          {$1 ++ [$2]}
      | Comando                          {[$1]}
 
 
-Declaracao: Tipo ListaId ';' {$2 :#: $1}
+Declaracao: Tipo ListaId ';' {sheki $1 $2}
 
 Declaracoes: Declaracoes Declaracao          {$1 ++ [$2]}
      | Declaracao                            {[$1]}
 
-ListaId: ListaId ',' Id            {$1}
-     | Id                          {$1}
+ListaId: ListaId ',' Id            {$1 ++ [$3]}
+     | Id                          {[$1]}
 
 BlocoPrincipal: '{' Declaracoes ListaDeCmd '}'         {$3}
      | '{' ListaDeCmd '}'                              {$2}
