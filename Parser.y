@@ -12,6 +12,7 @@ import Aux
 %tokentype { Token }
 %error { parseError }
 %token 
+  '"' {LITERAL}
   '+' {ADD}
   '-' {SUB}
   '*' {MUL}    
@@ -55,7 +56,7 @@ import Aux
 %right UMINUS
 
 %%
-Program : Declaracoes     {$1}                                
+Program : ListaDeFuncaoS BlocoPrincipal    {Prog (fst $1) (snd $1) (fst $2) (snd $2)}                                
 
 Expr  : Expr '+' Expr       { $1 :+: $3 }
       | Expr '-' Expr       { $1 :-: $3 }
@@ -65,6 +66,7 @@ Expr  : Expr '+' Expr       { $1 :+: $3 }
       | '-' Expr %prec UMINUS { Neg $2 }
       | TCons                 { Const $1 }  
       | Id                  {IdVar $1}
+      | Literal             {$1}
 
 ExprR : Expr '>' Expr       { $1 :>: $3 }
       | Expr '<' Expr       { $1 :<: $3 }
@@ -78,6 +80,9 @@ ExprL : ExprL '||' ExprL    { $1 :|: $3 }
       | '!' ExprL           { Not $2 }
       | ExprR               {Rel $1}
 
+Literal: '"' Id '"'           {Lit $2}
+     | '"' Num '"'            {Lit (show $2)}
+
 Tipo: 'int'                  { TInt } 
      | 'double'              { TDouble }
      | 'string'              { TString }
@@ -90,9 +95,11 @@ Parametro: Tipo Id                 {$2 :#: $1}
 DeclParametros: DeclParametros ',' Parametro                {$1 ++ [$3]}
      | Parametro                                            {[$1]}
 
--- ChamaFuncao modificado para cobrir apenas funções genéricas
-ChamaFuncao: Id '(' Expr ')'            {Proc $1 [$3]}
-     | Id '(' ')'                        {Proc $1 []}
+ListaDeParametros: ListaDeParametros ',' Expr               {$1 ++ [$3]}
+     | Expr                                                 {[$1]}
+
+ChamaFuncao: Id '(' ListaDeParametros ')'                   {Proc $1 $3}
+     | Id '(' ')'                                           {Proc $1 []}
 
 TCons: Num                   {CDouble $1}
      | Int                   {CInt $1}
@@ -109,11 +116,9 @@ CmdEnquanto: 'while' '(' ExprL ')' Bloco                 {While $3 $5}
 
 CmdAtrib: Id '=' Expr ';'               {Atrib $1 $3}
 
--- Comandos específicos para 'print' e 'read'
 CmdEscrita: 'print' '(' Expr ')' ';'   {Imp $3}
 CmdLeitura: 'read' '(' Id ')' ';'       {Leitura $3}
 
--- Mantenha o ChamaProc como uma chamada genérica para funções
 ChamaProc: ChamaFuncao ';'              { $1 }
 
 Comando: CmdSe           {$1}
@@ -130,21 +135,22 @@ ListaDeCmd: ListaDeCmd Comando          {$1 ++ [$2]}
 
 Declaracao: Tipo ListaId ';' {juntaTipo $1 $2}
 
-Declaracoes: Declaracoes Declaracao          {$1 ++ [$2]}
-     | Declaracao                            {[$1]}
+Declaracoes: Declaracoes Declaracao          {$1 ++ $2}
+     | Declaracao                            {$1}
 
 ListaId: ListaId ',' Id            {$1 ++ [$3]}
      | Id                          {[$1]}
 
-BlocoPrincipal: '{' Declaracoes ListaDeCmd '}'         {$3}
-     | '{' ListaDeCmd '}'                              {$2}
+BlocoPrincipal: '{' Declaracoes ListaDeCmd '}'         {($2, $3)}
+     | '{' ListaDeCmd '}'                              {([], $2)}
 
-Funcao: TipoRetorno Id '(' DeclParametros ')' BlocoPrincipal          {($2, $4, $6)}
-     | TipoRetorno Id '('  ')' BlocoPrincipal                        {($2, [], $5)}
+Funcao: TipoRetorno Id '(' DeclParametros ')' BlocoPrincipal          {($2 :->: ($4,$1), ($2, fst($6), snd($6)))}
+     | TipoRetorno Id '('  ')' BlocoPrincipal                        {($2 :->: ([],$1), ($2, fst($5), snd($5)))}
 
 ListaDeFuncao: ListaDeFuncao Funcao               {$1 ++ [$2]}
      | Funcao                                     {[$1]}
 
+ListaDeFuncaoS: ListaDeFuncao                     {separaLados $1}
 
 {
 parseError :: [Token] -> a

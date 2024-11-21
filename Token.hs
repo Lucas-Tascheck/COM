@@ -35,4 +35,5 @@ data Token
   | LEITURA
   | PRINT
   | RETURN
+  | LITERAL
   deriving (Eq, Show)

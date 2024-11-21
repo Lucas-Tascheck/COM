@@ -1,1 +1,16 @@
-int a, b, c;
+int func1(int a, double b){
+    int a, b;
+    double g;
+    return;
+}
+
+void func2(int aF, double b){
+    int f, j;
+    return;
+}
+
+{
+    int a, b, c;
+    print("teste");
+    return;
+}
