@@ -10,4 +10,4 @@ data Var = Id :#: Tipo deriving Show --
 data Funcao = Id :->: ([Var], Tipo) deriving Show  --
 type Bloco = [Comando]
 data Programa = Prog [Funcao] [(Id, [Var], [Comando])] [Var] [Comando] deriving Show --
-data Comando = If ExprL Bloco Bloco | While ExprL Bloco | Atrib Id Expr | Leitura Id | Imp Expr | Ret (Maybe Expr) | Proc Id [Expr] deriving Show
+data Comando = If ExprL Bloco Bloco | While ExprL Bloco | For (Id, Expr) ExprL (Id, Expr) Bloco | Atrib Id Expr | Leitura Id | Imp Expr | Ret (Maybe Expr) | Proc Id [Expr] deriving Show

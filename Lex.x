@@ -45,6 +45,7 @@ tokens :-
 <0> "if" {\s -> IF}
 <0> "else" {\s -> ELSE}
 <0> "while" {\s -> WHILE}
+<0> "for" {\s -> FOR}
 <0> "=" {\s -> ATRIB}
 <0> "read" {\s -> LEITURA}
 <0> "print" {\s -> PRINT}

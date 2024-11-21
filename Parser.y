@@ -42,6 +42,7 @@ import Aux
   'if' {IF}
   'else' {ELSE}
   'while' {WHILE}
+  'for' {FOR}
   '=' {ATRIB}
   'read' {LEITURA}
   'print' {PRINT}
@@ -122,6 +123,8 @@ CmdSe: 'if' '(' ExprL ')' Bloco 'else' Bloco            {If $3 $5 $7}
 
 CmdEnquanto: 'while' '(' ExprL ')' Bloco                 {While $3 $5}
 
+CmdFor: 'for' '(' Id '=' Expr ';' ExprL ';' Id '=' Expr ')' Bloco  {For ($3, $5) $7 ($9, $11) $13}
+
 CmdAtrib: Id '=' Expr ';'               {Atrib $1 $3}
 
 CmdEscrita: 'print' '(' Expr ')' ';'   {Imp $3}
@@ -131,6 +134,7 @@ ChamaProc: ChamaFuncao ';'              { $1 }
 
 Comando: CmdSe           {$1}
      | CmdEnquanto       {$1}
+     | CmdFor            {$1}
      | CmdAtrib          {$1}
      | CmdEscrita        {$1}
      | CmdLeitura        {$1}

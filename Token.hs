@@ -31,6 +31,7 @@ data Token
   | IF
   | ELSE
   | WHILE
+  | FOR
   | ATRIB
   | LEITURA
   | PRINT

@@ -11,8 +11,7 @@ void func2(int aF, double b){
 
 {
     int a, b, c;
-    if(1<2 && 3>8 || 1>a){
+    for(a = 0; a < 2; a = a + 1){
         return;
     }
-    return;
 }
