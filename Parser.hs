@@ -1026,7 +1026,7 @@ parseError :: [Token] -> a
 parseError s = error ("Parse error:" ++ show s)
 
 main = do
-  handle <- openFile "test.galu" ReadMode
+  handle <- openFile "codigo.txt" ReadMode
   s <- hGetContents handle
   print (calc (L.alexScanTokens s))
   hClose handle
