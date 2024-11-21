@@ -11,6 +11,6 @@ void func2(int aF, double b){
 
 {
     int a, b, c;
-    print("teste");
+    a = 1.0 + a("abacate verde");
     return;
 }

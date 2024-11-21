@@ -36,7 +36,7 @@ import Aux
   'double' {TDOUBLE}
   'void' {TVOID}
   'string' {TSTRING}  
-  Num {NUM $$}
+  Double {DOUBLE $$}
   Id {ID $$}
   Int {INT $$}
   'if' {IF}
@@ -58,15 +58,17 @@ import Aux
 %%
 Program : ListaDeFuncaoS BlocoPrincipal    {Prog (fst $1) (snd $1) (fst $2) (snd $2)}                                
 
-Expr  : Expr '+' Expr       { $1 :+: $3 }
-      | Expr '-' Expr       { $1 :-: $3 }
-      | Expr '*' Expr       { $1 :*: $3 }
-      | Expr '/' Expr       { $1 :/: $3 }
-      | '(' Expr ')'        { $2 }
-      | '-' Expr %prec UMINUS { Neg $2 }
-      | TCons                 { Const $1 }  
-      | Id                  {IdVar $1}
-      | Literal             {$1}
+Expr  : Expr '+' Expr                             { $1 :+: $3 }
+      | Expr '-' Expr                             { $1 :-: $3 }
+      | Expr '*' Expr                             { $1 :*: $3 }
+      | Expr '/' Expr                             { $1 :/: $3 }
+      | '(' Expr ')'                              { $2 }
+      | '-' Expr %prec UMINUS                     { Neg $2 }
+      | TCons                                     { Const $1 }  
+      | Id                                        {IdVar $1}
+      | Id '(' ListaDeParametros ')'              {Chamada $1 $3}
+      | Id '(' ')'                                {Chamada $1 []} 
+      | Literal                                   {$1}
 
 ExprR : Expr '>' Expr       { $1 :>: $3 }
       | Expr '<' Expr       { $1 :<: $3 }
@@ -80,8 +82,14 @@ ExprL : ExprL '||' ExprL    { $1 :|: $3 }
       | '!' ExprL           { Not $2 }
       | ExprR               {Rel $1}
 
-Literal: '"' Id '"'           {Lit $2}
-     | '"' Num '"'            {Lit (show $2)}
+ListaDeLiteral: ListaDeLiteral Id           {$1 ++ " " ++ $2}
+     | ListaDeLiteral Int                   {$1 ++ " " ++ (show $2)}
+     | ListaDeLiteral Double                {$1 ++ " " ++ (show $2)}
+     | Id                                   {$1}
+     | Int                                  {(show $1)}
+     | Double                               {(show $1)}
+
+Literal: '"' ListaDeLiteral '"'           {Lit $2}
 
 Tipo: 'int'                  { TInt } 
      | 'double'              { TDouble }
@@ -101,7 +109,7 @@ ListaDeParametros: ListaDeParametros ',' Expr               {$1 ++ [$3]}
 ChamaFuncao: Id '(' ListaDeParametros ')'                   {Proc $1 $3}
      | Id '(' ')'                                           {Proc $1 []}
 
-TCons: Num                   {CDouble $1}
+TCons: Double                   {CDouble $1}
      | Int                   {CInt $1}
 
 Bloco: '{' ListaDeCmd '}'               {$2}

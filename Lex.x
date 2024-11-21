@@ -9,15 +9,15 @@ import Token
 $digit = [0-9]      
 $letter = [a-zA-Z]   
 
-@num = $digit+(\.$digit+)? 
+@double = $digit+(\.$digit+)? 
 @int = $digit+ 
 @id = $letter($letter|$digit)* 
 
 tokens :-
 
 <0> $white+ ;
-<0> @num {\s -> NUM (read s)}
 <0> @int {\s -> INT (read s)}
+<0> @double {\s -> DOUBLE (read s)}
 <0> "+" {\s -> ADD}  
 <0> "-" {\s -> SUB}  
 <0> "*" {\s -> MUL}  
@@ -49,7 +49,6 @@ tokens :-
 <0> "read" {\s -> LEITURA}
 <0> "print" {\s -> PRINT}
 <0> "return" {\s -> RETURN}
-
 
 <0> @id  {\s -> ID s}   
 {

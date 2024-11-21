@@ -1,7 +1,7 @@
 module Token where
 
 data Token
-  = NUM Double
+  = DOUBLE Double
   | INT Integer
   | ID String
   | ADD
