@@ -55,7 +55,6 @@ import Aux
 %right UMINUS
 
 %%
-
 Program : Declaracoes     {$1}                                
 
 Expr  : Expr '+' Expr       { $1 :+: $3 }
@@ -129,7 +128,7 @@ ListaDeCmd: ListaDeCmd Comando          {$1 ++ [$2]}
      | Comando                          {[$1]}
 
 
-Declaracao: Tipo ListaId ';' {sheki $1 $2}
+Declaracao: Tipo ListaId ';' {juntaTipo $1 $2}
 
 Declaracoes: Declaracoes Declaracao          {$1 ++ [$2]}
      | Declaracao                            {[$1]}

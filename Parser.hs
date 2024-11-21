@@ -680,7 +680,7 @@ happyReduction_51 _
         (HappyAbsSyn27  happy_var_2)
         (HappyAbsSyn9  happy_var_1)
          =  HappyAbsSyn25
-                 (sheki happy_var_1 happy_var_2
+                 (juntaTipo happy_var_1 happy_var_2
         )
 happyReduction_51 _ _ _  = notHappyAtAll 
 

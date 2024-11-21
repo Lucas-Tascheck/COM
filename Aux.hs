@@ -1,7 +1,7 @@
 module Aux where
 import Types
 
-sheki :: Tipo -> [Id] -> [Var]
-sheki tipo [] = []
-sheki tipo [x] = [x :#: tipo]
-sheki tipo (x:t) = [x :#: tipo] ++ sheki tipo t
+juntaTipo :: Tipo -> [Id] -> [Var]
+juntaTipo tipo [] = []
+juntaTipo tipo [x] = [x :#: tipo]
+juntaTipo tipo (x:t) = [x :#: tipo] ++ juntaTipo tipo t
