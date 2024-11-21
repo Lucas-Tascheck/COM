@@ -194,7 +194,7 @@ happyReduction_2 (HappyAbsSyn6  happy_var_3)
         _
         (HappyAbsSyn6  happy_var_1)
          =  HappyAbsSyn6
-                 (happy_var_1 :+: happy_var_3
+                 (Add happy_var_1 happy_var_3
         )
 happyReduction_2 _ _ _  = notHappyAtAll 
 
@@ -205,7 +205,7 @@ happyReduction_3 (HappyAbsSyn6  happy_var_3)
         _
         (HappyAbsSyn6  happy_var_1)
          =  HappyAbsSyn6
-                 (happy_var_1 :-: happy_var_3
+                 (Sub happy_var_1 happy_var_3
         )
 happyReduction_3 _ _ _  = notHappyAtAll 
 
@@ -216,7 +216,7 @@ happyReduction_4 (HappyAbsSyn6  happy_var_3)
         _
         (HappyAbsSyn6  happy_var_1)
          =  HappyAbsSyn6
-                 (happy_var_1 :*: happy_var_3
+                 (Mul happy_var_1 happy_var_3
         )
 happyReduction_4 _ _ _  = notHappyAtAll 
 
@@ -227,7 +227,7 @@ happyReduction_5 (HappyAbsSyn6  happy_var_3)
         _
         (HappyAbsSyn6  happy_var_1)
          =  HappyAbsSyn6
-                 (happy_var_1 :/: happy_var_3
+                 (Div happy_var_1 happy_var_3
         )
 happyReduction_5 _ _ _  = notHappyAtAll 
 
@@ -309,7 +309,7 @@ happyReduction_13 (HappyAbsSyn6  happy_var_3)
         _
         (HappyAbsSyn6  happy_var_1)
          =  HappyAbsSyn7
-                 (happy_var_1 :>: happy_var_3
+                 (Rge happy_var_1 happy_var_3
         )
 happyReduction_13 _ _ _  = notHappyAtAll 
 
@@ -320,7 +320,7 @@ happyReduction_14 (HappyAbsSyn6  happy_var_3)
         _
         (HappyAbsSyn6  happy_var_1)
          =  HappyAbsSyn7
-                 (happy_var_1 :<: happy_var_3
+                 (Rle happy_var_1 happy_var_3
         )
 happyReduction_14 _ _ _  = notHappyAtAll 
 
@@ -331,7 +331,7 @@ happyReduction_15 (HappyAbsSyn6  happy_var_3)
         _
         (HappyAbsSyn6  happy_var_1)
          =  HappyAbsSyn7
-                 (happy_var_1 :>=: happy_var_3
+                 (Rgt happy_var_1 happy_var_3
         )
 happyReduction_15 _ _ _  = notHappyAtAll 
 
@@ -342,7 +342,7 @@ happyReduction_16 (HappyAbsSyn6  happy_var_3)
         _
         (HappyAbsSyn6  happy_var_1)
          =  HappyAbsSyn7
-                 (happy_var_1 :<=: happy_var_3
+                 (Rlt happy_var_1 happy_var_3
         )
 happyReduction_16 _ _ _  = notHappyAtAll 
 
@@ -353,7 +353,7 @@ happyReduction_17 (HappyAbsSyn6  happy_var_3)
         _
         (HappyAbsSyn6  happy_var_1)
          =  HappyAbsSyn7
-                 (happy_var_1 :==: happy_var_3
+                 (Req happy_var_1 happy_var_3
         )
 happyReduction_17 _ _ _  = notHappyAtAll 
 
@@ -364,7 +364,7 @@ happyReduction_18 (HappyAbsSyn6  happy_var_3)
         _
         (HappyAbsSyn6  happy_var_1)
          =  HappyAbsSyn7
-                 (happy_var_1 :/=: happy_var_3
+                 (Rdif happy_var_1 happy_var_3
         )
 happyReduction_18 _ _ _  = notHappyAtAll 
 
@@ -375,7 +375,7 @@ happyReduction_19 (HappyAbsSyn8  happy_var_3)
         _
         (HappyAbsSyn8  happy_var_1)
          =  HappyAbsSyn8
-                 (happy_var_1 :|: happy_var_3
+                 (Or happy_var_1 happy_var_3
         )
 happyReduction_19 _ _ _  = notHappyAtAll 
 
@@ -386,7 +386,7 @@ happyReduction_20 (HappyAbsSyn8  happy_var_3)
         _
         (HappyAbsSyn8  happy_var_1)
          =  HappyAbsSyn8
-                 (happy_var_1 :&: happy_var_3
+                 (And happy_var_1 happy_var_3
         )
 happyReduction_20 _ _ _  = notHappyAtAll 
 

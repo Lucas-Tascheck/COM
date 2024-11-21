@@ -58,10 +58,10 @@ import Aux
 %%
 Program : ListaDeFuncaoS BlocoPrincipal    {Prog (fst $1) (snd $1) (fst $2) (snd $2)}                                
 
-Expr  : Expr '+' Expr                             { $1 :+: $3 }
-      | Expr '-' Expr                             { $1 :-: $3 }
-      | Expr '*' Expr                             { $1 :*: $3 }
-      | Expr '/' Expr                             { $1 :/: $3 }
+Expr  : Expr '+' Expr                             { Add $1 $3 }
+      | Expr '-' Expr                             { Sub $1 $3 }
+      | Expr '*' Expr                             { Mul $1 $3 }
+      | Expr '/' Expr                             { Div $1 $3 }
       | '(' Expr ')'                              { $2 }
       | '-' Expr %prec UMINUS                     { Neg $2 }
       | TCons                                     { Const $1 }  
@@ -70,15 +70,15 @@ Expr  : Expr '+' Expr                             { $1 :+: $3 }
       | Id '(' ')'                                {Chamada $1 []} 
       | Literal                                   {$1}
 
-ExprR : Expr '>' Expr       { $1 :>: $3 }
-      | Expr '<' Expr       { $1 :<: $3 }
-      | Expr '>=' Expr      { $1 :>=: $3 }
-      | Expr '<=' Expr      { $1 :<=: $3 }
-      | Expr '==' Expr      { $1 :==: $3 }
-      | Expr '!=' Expr      { $1 :/=: $3 }
+ExprR : Expr '>' Expr       { Rge $1 $3 }
+      | Expr '<' Expr       { Rle $1 $3 }
+      | Expr '>=' Expr      { Rgt $1 $3 }
+      | Expr '<=' Expr      { Rlt $1 $3 }
+      | Expr '==' Expr      { Req $1 $3 }
+      | Expr '!=' Expr      { Rdif $1 $3 }
 
-ExprL : ExprL '||' ExprL    { $1 :|: $3 }
-      | ExprL '&&' ExprL    { $1 :&: $3 }
+ExprL : ExprL '||' ExprL    { Or $1 $3 }
+      | ExprL '&&' ExprL    { And $1 $3 }
       | '!' ExprL           { Not $2 }
       | ExprR               {Rel $1}
 
