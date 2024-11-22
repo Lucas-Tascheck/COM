@@ -6,32 +6,33 @@ import qualified Lex as L
 import System.IO
 import Types
 import Aux
+import Semantica
 }
 
 %name calc
 %tokentype { Token }
 %error { parseError }
 %token 
-  '"' {LITERAL}
-  '+' {ADD}
-  '-' {SUB}
-  '*' {MUL}    
-  '/' {DIV}
-  '(' {LPAR}
-  ')' {RPAR}
-  '>' {MORE}
-  '>=' {MOREEQ}
-  '<' {LESS}
-  '<=' {LESSEQ}
-  '!=' {DIFF}
-  '==' {EQUAL}
-  '&&' {AND}
-  '||' {OR}
-  '!' {NOT}
-  ';' {SEMICOLON}
-  ',' {COMMA}
-  '{' {OCURL}
-  '}' {CCURL}
+  '"' {TLITERAL}
+  '+' {TADD}
+  '-' {TSUB}
+  '*' {TMUL}    
+  '/' {TDIV}
+  '(' {TLPAR}
+  ')' {TRPAR}
+  '>' {TMORE}
+  '>=' {TMOREEQ}
+  '<' {TLESS}
+  '<=' {TLESSEQ}
+  '!=' {TDIFF}
+  '==' {TEQUAL}
+  '&&' {TAND}
+  '||' {TOR}
+  '!' {TNOT}
+  ';' {TSEMICOLON}
+  ',' {TCOMMA}
+  '{' {TOCURL}
+  '}' {TCCURL}
   'int' {TINT}
   'double' {TDOUBLE}
   'void' {TVOID}
@@ -39,14 +40,14 @@ import Aux
   Double {DOUBLE $$}
   Id {ID $$}
   Int {INT $$}
-  'if' {IF}
-  'else' {ELSE}
-  'while' {WHILE}
-  'for' {FOR}
-  '=' {ATRIB}
-  'read' {LEITURA}
-  'print' {PRINT}
-  'return' {RETURN}
+  'if' {TIF}
+  'else' {TELSE}
+  'while' {TWHILE}
+  'for' {TFOR}
+  '=' {TATRIB}
+  'read' {TLEITURA}
+  'print' {TPRINT}
+  'return' {TRETURN}
 
 %left '||'
 %left '&&'
@@ -57,7 +58,8 @@ import Aux
 %right UMINUS
 
 %%
-Program : ListaDeFuncaoS BlocoPrincipal    {Prog (fst $1) (snd $1) (fst $2) (snd $2)}                                
+
+Program : ListaDeFuncaoS BlocoPrincipal           {printSemantica (Prog (fst $1) (snd $1) (fst $2) (snd $2))}                                
 
 Expr  : Expr '+' Expr                             { Add $1 $3 }
       | Expr '-' Expr                             { Sub $1 $3 }
@@ -91,6 +93,7 @@ ListaDeLiteral: ListaDeLiteral Id           {$1 ++ " " ++ $2}
      | Double                               {(show $1)}
 
 Literal: '"' ListaDeLiteral '"'           {Lit $2}
+     | '"' '"'                            {Lit []}
 
 Tipo: 'int'                  { TInt } 
      | 'double'              { TDouble }
@@ -171,6 +174,6 @@ parseError s = error ("Parse error:" ++ show s)
 main = do
   handle <- openFile "codigo.txt" ReadMode
   s <- hGetContents handle
-  print (calc (L.alexScanTokens s))
+  (calc (L.alexScanTokens s))
   hClose handle
 }
