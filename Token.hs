@@ -28,6 +28,7 @@ data Token
   | TINT
   | TSTRING
   | TVOID
+  | TFLOAT
   | TIF
   | TELSE
   | TWHILE

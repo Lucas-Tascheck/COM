@@ -1,29 +1,55 @@
-int funcao(int x, int y){
-    return 1 + "erro funcao";
-}
-int funcao2(int x, int x){
-    return z;
-}
-int funcao2(){
-    return 1;
-}
+float maior (float a, float b)
 {
-    double a;
-    int x, y;
-    z = 2.2;
-    a = 2;
-    a = "";
-    a = 2 + "erro atrib";
-    a = funcao("" + 2, funcao2(2.0), 1);
-    if (2 + 1.0 == "erro exprL"){
-        x = 2.0;
-    }
-    a = x;
-    x = z;
-    while(x==a){
-        a = funcaoNExiste();
-    }
-    a = retornaVoid();
-    return x + "erro na main";
-    
+  int m;
+  
+  if (a > b) {m = a;}
+  else {m = b;}
+  return m;
+}
+
+int fat (int n)
+{
+  int f;
+  f = 0;
+  while (n > 0)
+  { 
+    f = f * n;
+    n = n - 1;
+  }
+  return f;
+}
+
+int somatorio (int n)
+{
+   int i; 
+   float s;
+   
+   s = 0;
+   for (i = 0 ; i < n; i = i + 1)
+   {
+       s = s + i;
+   }
+   return s;
+}   
+   
+
+void imprimir(string s, float r)
+{
+  int s;
+  
+  print (s);
+  print (r);
+  return 0;
+}
+
+{
+  int x, num;
+  float a;
+  
+  print("Numero:");
+  read (num);
+  x = fat (4.5);
+  a = maior (2.5, 10);
+  imprimir(1, "teste:", 2);
+  return 0;
 }

@@ -118,6 +118,9 @@ transformInt (Neg e) listaVars listaFuncoes elemCompleto = do
 transformInt e@(Const (CDouble _)) _ _ elemCompleto = do {
         return (DoubleInt e)
      }
+transformInt e@(Const (CFloat _)) _ _ elemCompleto = do {
+        return (DoubleInt e)
+     }
 transformInt e@(Const (CInt _)) _ _ elemCompleto = return e
 transformInt e@(Chamada nome lExpr) listaVars listaFuncoes elemCompleto = do {
         transformedLExpr <- verifyParams lExpr (getTipoParams nome listaFuncoes) listaVars listaFuncoes;
@@ -331,6 +334,7 @@ verifyIfExistsOnExpr (Neg e) declaracoesFuncao blocosFuncoes declaracaoMain = do
                                                     }
 verifyIfExistsOnExpr e@(Const (CDouble _)) _ _ _ = return []
 verifyIfExistsOnExpr e@(Const (CInt _)) _ _ _ = return []
+verifyIfExistsOnExpr e@(Const (CFloat _)) _ _ _ = return []
 verifyIfExistsOnExpr e@(Chamada nome params) declaracoesFuncao blocosFuncoes declaracaoMain = do {
     existeFuncao <- verifyIfFunctionExists nome declaracoesFuncao;
     if existeFuncao then do
@@ -985,6 +989,7 @@ translateExpr (Neg e) = do {
                         return ("- "++show e);
                     }
 translateExpr e@(Const (CDouble v)) = return (show v)
+translateExpr e@(Const (CFloat v)) = return (show v)
 translateExpr e@(Const (CInt v)) = return (show v)
 translateExpr e@(Chamada nome v) = do {
      translatedV <- mapM translateExpr v;

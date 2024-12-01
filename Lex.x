@@ -7,7 +7,7 @@ import Token
 %wrapper "basic"
 
 $digit = [0-9]      
-$letter = [a-zA-Z ]   
+$letter = [:a-zA-Z ]   
 
 @double = $digit+(\.$digit+)? 
 @int = $digit+ 
@@ -25,8 +25,8 @@ tokens :-
 <0> "(" {\s -> TLPAR}  
 <0> ")" {\s -> TRPAR}  
 <0> ">" {\s -> TMORE}
-<0> ">=" {\s -> TMOREEQ}
 <0> "<" {\s -> TLESS}
+<0> ">=" {\s -> TMOREEQ}
 <0> "<=" {\s -> TLESSEQ}
 <0> "!=" {\s -> TDIFF}
 <0> "==" {\s -> TEQUAL}
@@ -35,6 +35,7 @@ tokens :-
 <0> "!" {\s -> TNOT}
 <0> "int" {\s -> TINT}
 <0> "double" {\s -> TDOUBLE}
+<0> "float" {\s -> TFLOAT}
 <0> "string" {\s -> TSTRING}
 <0> "void" {\s -> TVOID}
 <0> """    {\s -> TLITERAL}

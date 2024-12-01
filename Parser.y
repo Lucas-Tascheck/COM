@@ -35,8 +35,10 @@ import Semantica
   '}' {TCCURL}
   'int' {TINT}
   'double' {TDOUBLE}
+  'float' {TFLOAT}
   'void' {TVOID}
   'string' {TSTRING}  
+  Float {DOUBLE $$}
   Double {DOUBLE $$}
   Id {ID $$}
   Int {INT $$}
@@ -73,10 +75,10 @@ Expr  : Expr '+' Expr                             { Add $1 $3 }
       | Id '(' ')'                                {Chamada $1 []} 
       | Literal                                   {$1}
 
-ExprR : Expr '>' Expr       { Rge $1 $3 }
-      | Expr '<' Expr       { Rle $1 $3 }
-      | Expr '>=' Expr      { Rgt $1 $3 }
-      | Expr '<=' Expr      { Rlt $1 $3 }
+ExprR : Expr '>' Expr       { Rgt $1 $3 }
+      | Expr '<' Expr       { Rlt $1 $3 }
+      | Expr '>=' Expr      { Rge $1 $3 }
+      | Expr '<=' Expr      { Rle $1 $3 }
       | Expr '==' Expr      { Req $1 $3 }
       | Expr '!=' Expr      { Rdif $1 $3 }
 
@@ -97,6 +99,7 @@ Literal: '"' ListaDeLiteral '"'           {Lit $2}
 
 Tipo: 'int'                  { TInt } 
      | 'double'              { TDouble }
+     | 'float'               { TFloat }
      | 'string'              { TString }
 
 TipoRetorno: Tipo            {$1}
@@ -114,7 +117,8 @@ ChamaFuncao: Id '(' ListaDeParametros ')'                   {Proc $1 $3}
      | Id '(' ')'                                           {Proc $1 []}
 
 TCons: Double                   {CDouble $1}
-     | Int                   {CInt $1}
+     | Int                      {CInt $1}
+     | Float                    {CFloat $1}
 
 Bloco: '{' ListaDeCmd '}'               {$2}
 
