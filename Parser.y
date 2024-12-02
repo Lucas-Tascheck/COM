@@ -131,6 +131,7 @@ CmdSe: 'if' '(' ExprL ')' Bloco 'else' Bloco            {If $3 $5 $7}
 CmdEnquanto: 'while' '(' ExprL ')' Bloco                 {While $3 $5}
 
 CmdFor: 'for' '(' Id '=' Expr ';' ExprL ';' Id '=' Expr ')' Bloco  {For ($3, $5) $7 ($9, $11) $13}
+     | 'for' '(' 'int' Id '=' Expr ';' ExprL ';' Id '=' Expr ')' Bloco  {For ($4, $6) $8 ($10, $12) $14}
 
 CmdAtrib: Id '=' Expr ';'               {Atrib $1 $3}
 
