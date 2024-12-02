@@ -190,6 +190,10 @@ verifyDoubleInt declaracoesFuncao blocosFuncoes declaracaoMain (elem@(While _ bl
      verifyDoubleInt declaracoesFuncao blocosFuncoes declaracaoMain bloco onde;
      verifyDoubleInt declaracoesFuncao blocosFuncoes declaracaoMain xs onde >>= \rest -> return (elem : rest);
  }
+verifyDoubleInt declaracoesFuncao blocosFuncoes declaracaoMain (elem@(For _ _ _ bloco):xs) onde = do {
+     verifyDoubleInt declaracoesFuncao blocosFuncoes declaracaoMain bloco onde;
+     verifyDoubleInt declaracoesFuncao blocosFuncoes declaracaoMain xs onde >>= \rest -> return (elem : rest);
+ }
 verifyDoubleInt declaracoesFuncao blocosFuncoes declaracaoMain (_:xs) onde = do {
     verifyDoubleInt declaracoesFuncao blocosFuncoes declaracaoMain xs onde;
 }
@@ -244,7 +248,7 @@ callVerifyFuncaoExists (declaracao@(nome :->: _):restoDeclaracao) ((_,dec,bloco)
 
 verifyIfExists _ _ _ [] _ = return []
 verifyIfExists declaracoesFuncao blocosFuncoes declaracaoMain (elem@(Atrib nome e):xs) onde = do
-    varExiste <- verifyIfVarExists nome declaracaoMain
+    varExiste <- verifyIfVarExists nome (declaracaoMain++extrairTodasVars declaracoesFuncao)
     if varExiste then do
         listaExprComErro <- verifyIfExistsOnExpr e declaracoesFuncao blocosFuncoes declaracaoMain
         listaEVazia <- emptyList listaExprComErro
@@ -289,6 +293,10 @@ verifyIfExists declaracoesFuncao blocosFuncoes declaracaoMain (elem@(If _ bloco 
     rest <- verifyIfExists declaracoesFuncao blocosFuncoes declaracaoMain xs onde
     return (elem : rest)
 verifyIfExists declaracoesFuncao blocosFuncoes declaracaoMain (elem@(While _ bloco):xs) onde = do
+    verifyIfExists declaracoesFuncao blocosFuncoes declaracaoMain bloco onde;
+    rest <- verifyIfExists declaracoesFuncao blocosFuncoes declaracaoMain xs onde
+    return (elem : rest)
+verifyIfExists declaracoesFuncao blocosFuncoes declaracaoMain (elem@(For _ _ _ bloco):xs) onde = do
     verifyIfExists declaracoesFuncao blocosFuncoes declaracaoMain bloco onde;
     rest <- verifyIfExists declaracoesFuncao blocosFuncoes declaracaoMain xs onde
     return (elem : rest)
@@ -343,7 +351,7 @@ verifyIfExistsOnExpr e@(Chamada nome params) declaracoesFuncao blocosFuncoes dec
         return [e]
 }
 verifyIfExistsOnExpr e@(IdVar nome) declaracoesFuncao blocosFuncoes declaracaoMain = do {
-    varExiste <- verifyIfVarExists nome declaracaoMain;
+    varExiste <- verifyIfVarExists nome (declaracaoMain++extrairTodasVars declaracoesFuncao);
     if varExiste then
         return [];
     else
@@ -413,7 +421,7 @@ verifyTypeExprFuncao (y:ys) ((_,declaracoes,bloco):xs) declaracoesFuncao blocosF
 
 verifyTypeExpr _ _ _ [] = return []
 verifyTypeExpr declaracoesFuncao blocosFuncoes declaracaoMain (elem@(Atrib nome e):xs) = do
-    case getTipoVar nome declaracaoMain of
+    case getTipoVar nome (declaracaoMain++extrairTodasVars declaracoesFuncao) of
         Just tipo -> do {
              compartivel <- verifyTypesWithExpr e tipo declaracoesFuncao blocosFuncoes declaracaoMain;
              if not compartivel then do
@@ -441,6 +449,20 @@ verifyTypeExpr declaracoesFuncao blocosFuncoes declaracaoMain (elem@(While cExpr
     if not saoCompativeis then do
         traduzidoE <- translateExprL cExprL;
         erro ("Tipos incompatíveis dentro do while ( "++ traduzidoE++" )")
+        rest <- verifyTypeExpr declaracoesFuncao blocosFuncoes declaracaoMain xs
+        return (elem : rest)
+    else do
+        rest <- verifyTypeExpr declaracoesFuncao blocosFuncoes declaracaoMain xs
+        return (elem : rest)
+    discart1 <- verifyTypeExpr declaracoesFuncao blocosFuncoes declaracaoMain bloco;
+    rest <- verifyTypeExpr declaracoesFuncao blocosFuncoes declaracaoMain xs;
+    return (elem : rest);
+verifyTypeExpr declaracoesFuncao blocosFuncoes declaracaoMain (elem@(For _ cExprL _ bloco):xs) = do
+    lista <- getListaTiposExprL cExprL declaracoesFuncao blocosFuncoes declaracaoMain;
+    saoCompativeis <- listCompatibleTypes lista;
+    if not saoCompativeis then do
+        traduzidoE <- translateExprL cExprL;
+        erro ("Tipos incompatíveis dentro do for ( "++ traduzidoE++" )")
         rest <- verifyTypeExpr declaracoesFuncao blocosFuncoes declaracaoMain xs
         return (elem : rest)
     else do
@@ -577,13 +599,21 @@ getTipoExp e@(Chamada nome params) declaracoesFuncao blocosFuncoes declaracaoMai
         Nothing -> return [TVoid];
 
  }
-getTipoExp e@(IdVar nome) declaracoesFuncao blocosFuncoes declaracaoMain = do {
-    tipoVar <- getTipoVar nome declaracaoMain;
+getTipoExp e@(IdVar nome) declaracoesFuncao blocosFuncoes declaracaoMain = do
+    let todasAsVars = extrairTodasVars declaracoesFuncao
+    tipoVar <- getTipoVar nome (declaracaoMain++todasAsVars)
     return [tipoVar]
- }
+
 getTipoExp e@(Lit _) _ _ _ = return [TString]
 getTipoExp e@(IntDouble elem) _ _ _ = return [TDouble]
 getTipoExp e _ _ _ = return [TInt]
+
+extrairVars :: Funcao -> [Var]
+extrairVars (_ :->: (vars, _)) = vars
+
+extrairTodasVars :: [Funcao] -> [Var]
+extrairTodasVars funcoes = concatMap extrairVars funcoes
+
 
 verifyTypesWithExpr (Add e1 e2) tipo declaracoesFuncao blocosFuncoes declaracaoMain = do {
                                                          transformedE1 <- verifyTypesWithExpr e1 tipo declaracoesFuncao blocosFuncoes declaracaoMain;
@@ -629,7 +659,7 @@ verifyTypesWithExpr e@(Chamada nome params) tipo declaracoesFuncao blocosFuncoes
 
  }
 verifyTypesWithExpr e@(IdVar nome) tipo declaracoesFuncao blocosFuncoes declaracaoMain = do {
-     tipoVar <- getTipoVar nome declaracaoMain;
+     tipoVar <- getTipoVar nome (declaracaoMain++extrairTodasVars declaracoesFuncao);
      if tipoVar==TDouble || tipoVar==TInt then
          return (tipo==TDouble || tipo==TInt)
      else
@@ -661,7 +691,7 @@ getPriTipoComExpr e@(Chamada nome _) declaracoesFuncao blocosFuncoes declaracaoM
      case tipo of
          Just tipo -> return tipo;
  }
-getPriTipoComExpr e@(IdVar nome) declaracoesFuncao blocosFuncoes declaracaoMain = getTipoVar nome declaracaoMain
+getPriTipoComExpr e@(IdVar nome) declaracoesFuncao blocosFuncoes declaracaoMain = getTipoVar nome (declaracaoMain++extrairTodasVars declaracoesFuncao)
 getPriTipoComExpr e@(Lit _) _ _ _ = return TString
 getPriTipoComExpr e _ _ _ = return TInt
 
@@ -884,7 +914,6 @@ verifyExprLDouble (Rel expR) listaVars listaFuncoes = do {
     transformedExpR <- verifyExprRDouble expR listaVars listaFuncoes;
     return (Rel transformedExpR)
  }
-
 normDoubleR _ _ _ [] = return []
 normDoubleR declaracoesFuncao blocosFuncoes declaracaoMain (elem@(If exprL bloco blocoElse):xs) = do {
         transformedExprL <- verifyExprLDouble exprL declaracaoMain declaracoesFuncao;
@@ -898,6 +927,12 @@ normDoubleR declaracoesFuncao blocosFuncoes declaracaoMain (elem@(While exprL bl
         transformedBloco <- normDouble declaracoesFuncao blocosFuncoes declaracaoMain bloco;
         rest <- normDoubleR declaracoesFuncao blocosFuncoes declaracaoMain xs;
         return (While transformedExprL transformedBloco : rest)
+    }
+normDoubleR declaracoesFuncao blocosFuncoes declaracaoMain (elem@(For (id, expr) exprL (id2, expr2) bloco):xs) = do {
+        transformedExprL <- verifyExprLDouble exprL declaracaoMain declaracoesFuncao;
+        transformedBloco <- normDouble declaracoesFuncao blocosFuncoes declaracaoMain bloco;
+        rest <- normDoubleR declaracoesFuncao blocosFuncoes declaracaoMain xs;
+        return (For (id, expr) transformedExprL (id2, expr2) transformedBloco : rest)
     }
 normDoubleR declaracoesFuncao blocosFuncoes declaracaoMain (elem:xs) = do {
          rest <- normDoubleR declaracoesFuncao blocosFuncoes declaracaoMain xs;
