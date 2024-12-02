@@ -47,6 +47,8 @@ import Semantica
   'while' {TWHILE}
   'for' {TFOR}
   '=' {TATRIB}
+  '++' {TATRBP}
+  '--' {TATRBL}
   'read' {TLEITURA}
   'print' {TPRINT}
   'return' {TRETURN}
@@ -135,6 +137,8 @@ CmdFor: 'for' '(' Id '=' Expr ';' ExprL ';' Id '=' Expr ')' Bloco  {For ($3, $5)
      | 'for' '(' 'int' Id '=' Expr ';' ExprL ';' Id '=' Expr ')' Bloco  {For ($4, $6) $8 ($10, $12) $14}
 
 CmdAtrib: Id '=' Expr ';'               {Atrib $1 $3}
+     | Id '++' ';'                      {Atrib $1 (Add (IdVar $1) (Const (CInt 1)))}
+     | Id '--' ';'                      {Atrib $1 (Sub (IdVar $1) (Const (CInt 1)))}
 
 CmdEscrita: 'print' '(' Expr ')' ';'   {Imp $3}
 CmdLeitura: 'read' '(' Id ')' ';'       {Leitura $3}
