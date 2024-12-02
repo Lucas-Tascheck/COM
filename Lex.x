@@ -18,6 +18,8 @@ tokens :-
 <0> $white+ ;
 <0> @int {\s -> INT (read s)}
 <0> @double {\s -> DOUBLE (read s)}
+<0> "++" {\s -> TATRBP}
+<0> "--" {\s -> TATRBL}
 <0> "+" {\s -> TADD}  
 <0> "-" {\s -> TSUB}  
 <0> "*" {\s -> TMUL}  
