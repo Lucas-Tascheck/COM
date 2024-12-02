@@ -443,6 +443,17 @@ verifyTypeExpr declaracoesFuncao blocosFuncoes declaracaoMain (elem@(If _ bloco 
     discart2 <- verifyTypeExpr declaracoesFuncao blocosFuncoes declaracaoMain blocoElse;
     rest <- verifyTypeExpr declaracoesFuncao blocosFuncoes declaracaoMain xs;
     return (elem : rest);
+verifyTypeExpr declaracoesFuncao blocosFuncoes declaracaoMain (elem@(Proc nome params):xs) = do {
+    paramsCompativel <- verifyTypesParams params declaracoesFuncao blocosFuncoes declaracaoMain;
+    paramsTraduzido <- translateExprComoParams params;
+    unless paramsCompativel (erro ("Tipos incompatíveis nos parametros da função: "++nome++"( "++paramsTraduzido++" )"));
+    quantParams <- getQuantidadeParams nome declaracoesFuncao;
+    when (quantParams > length params) (erro ("Quantidade a menos de parametros na chamada da função: "++nome++"( "++paramsTraduzido++" )"));
+    when (quantParams < length params) (erro ("Quantidade a mais de parametros na chamada da função: "++nome++"( "++paramsTraduzido++" )"));
+    tipoFuncao <- getTipoFuncao nome declaracoesFuncao;
+    rest <- verifyTypeExpr declaracoesFuncao blocosFuncoes declaracaoMain xs;
+    return (elem : rest);
+ }
 verifyTypeExpr declaracoesFuncao blocosFuncoes declaracaoMain (elem@(While cExprL bloco):xs) = do
     lista <- getListaTiposExprL cExprL declaracoesFuncao blocosFuncoes declaracaoMain;
     saoCompativeis <- listCompatibleTypes lista;
@@ -594,10 +605,10 @@ getTipoExp e@(Chamada nome params) declaracoesFuncao blocosFuncoes declaracaoMai
     when (quantParams > length params) (erro ("Quantidade a menos de parametros na chamada da função: "++nome++"( "++paramsTraduzido++" )"));
     when (quantParams < length params) (erro ("Quantidade a mais de parametros na chamada da função: "++nome++"( "++paramsTraduzido++" )"));
     tipoFuncao <- getTipoFuncao nome declaracoesFuncao;
+    
     case tipoFuncao of
         Just tipoFuncao -> return [TVoid];
         Nothing -> return [TVoid];
-
  }
 getTipoExp e@(IdVar nome) declaracoesFuncao blocosFuncoes declaracaoMain = do
     let todasAsVars = extrairTodasVars declaracoesFuncao
