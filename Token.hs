@@ -34,6 +34,8 @@ data Token
   | TWHILE
   | TFOR
   | TATRIB
+  | TATRBP
+  | TATRBL
   | TLEITURA
   | TPRINT
   | TRETURN
