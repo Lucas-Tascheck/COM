@@ -468,6 +468,19 @@ verifyTypeExpr declaracoesFuncao blocosFuncoes declaracaoMain (elem@(While cExpr
     discart1 <- verifyTypeExpr declaracoesFuncao blocosFuncoes declaracaoMain bloco;
     rest <- verifyTypeExpr declaracoesFuncao blocosFuncoes declaracaoMain xs;
     return (elem : rest);
+verifyTypeExpr declaracoesFuncao blocosFuncoes declaracaoMain (elem@(Imp cExpr):xs) = do
+    lista <- getTipoExp cExpr declaracoesFuncao blocosFuncoes declaracaoMain;
+    saoCompativeis <- listCompatibleTypes lista;
+    if not saoCompativeis then do
+        traduzidoE <- translateExpr cExpr;
+        erro ("Tipos incompatíveis dentro do Print ( "++ traduzidoE++" )")
+        rest <- verifyTypeExpr declaracoesFuncao blocosFuncoes declaracaoMain xs
+        return (elem : rest)
+    else do
+        rest <- verifyTypeExpr declaracoesFuncao blocosFuncoes declaracaoMain xs
+        return (elem : rest)
+    rest <- verifyTypeExpr declaracoesFuncao blocosFuncoes declaracaoMain xs;
+    return (elem : rest);
 verifyTypeExpr declaracoesFuncao blocosFuncoes declaracaoMain (elem@(For _ cExprL _ bloco):xs) = do
     lista <- getListaTiposExprL cExprL declaracoesFuncao blocosFuncoes declaracaoMain;
     saoCompativeis <- listCompatibleTypes lista;
