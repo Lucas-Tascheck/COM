@@ -38,8 +38,8 @@ import Semantica
   'float' {TFLOAT}
   'void' {TVOID}
   'string' {TSTRING}  
-  Float {DOUBLE $$}
   Double {DOUBLE $$}
+  Float {DOUBLE $$}
   Id {ID $$}
   Int {INT $$}
   'if' {TIF}
@@ -61,7 +61,8 @@ import Semantica
 
 %%
 
-Program : ListaDeFuncaoS BlocoPrincipal           {printSemantica (Prog (fst $1) (snd $1) (fst $2) (snd $2))}                                
+Program : ListaDeFuncaoS BlocoPrincipal           {printSemantica (Prog (fst $1) (snd $1) (fst $2) (snd $2))}       
+     | BlocoPrincipal                             {printSemantica (Prog [] [] (fst $1) (snd $1))}                        
 
 Expr  : Expr '+' Expr                             { Add $1 $3 }
       | Expr '-' Expr                             { Sub $1 $3 }
